@@ -666,6 +666,25 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
     }
   }, [consoleMessages, webInterface?.isRunning, config]); // Depend on console messages and debug mode
 
+  // Broadcast CLI action required state when auth screens are shown
+  useEffect(() => {
+    if (webInterface?.service && webInterface.isRunning) {
+      const isActionRequired = isAuthDialogOpen || isAuthenticating;
+      
+      if (isActionRequired) {
+        const title = t('web.cli_action.title', 'CLI Action Required');
+        const message = isAuthenticating 
+          ? t('web.cli_action.auth_in_progress', 'Authentication is in progress. Please check the CLI terminal.')
+          : t('web.cli_action.auth_required', 'Authentication is required. Please complete the authentication process in the CLI terminal.');
+        
+        webInterface.service.broadcastCliActionRequired(true, 'authentication', title, message);
+      } else {
+        // Clear the action required state when auth is complete
+        webInterface.service.broadcastCliActionRequired(false);
+      }
+    }
+  }, [isAuthDialogOpen, isAuthenticating, webInterface?.isRunning]); // Monitor auth states
+
   // Web interface startup message for --web flag
   const webStartupShownRef = useRef(false);
   useEffect(() => {

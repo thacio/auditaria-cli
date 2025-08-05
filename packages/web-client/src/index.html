@@ -165,6 +165,19 @@
         </div>
     </div>
     
+    <!-- CLI Action Required Modal (non-dismissible) -->
+    <div id="cli-action-modal" class="cli-action-modal" style="display: none;">
+        <div class="cli-action-backdrop"></div>
+        <div class="cli-action-content">
+            <div class="cli-action-icon">⚠️</div>
+            <h2 id="cli-action-title">CLI Action Required</h2>
+            <p id="cli-action-message">Please complete the action in the CLI terminal.</p>
+            <div class="cli-action-info">
+                <small>This modal will close automatically when the action is completed.</small>
+            </div>
+        </div>
+    </div>
+    
     <script src="marked.min.js"></script>
     <script src="confirmation-queue.js"></script>
     <script src="client.js"></script>

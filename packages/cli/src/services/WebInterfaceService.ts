@@ -38,6 +38,7 @@ export class WebInterfaceService {
   private currentSlashCommands: readonly SlashCommand[] = [];
   private currentMCPServers: { servers: any[]; blockedServers: any[] } = { servers: [], blockedServers: [] };
   private currentConsoleMessages: ConsoleMessageItem[] = [];
+  private currentCliActionState: { active: boolean; reason: string; title: string; message: string } | null = null;
 
   /**
    * Start HTTP server on specified port
@@ -585,6 +586,47 @@ export class WebInterfaceService {
   }
 
   /**
+   * Broadcast CLI action required state to all connected web clients
+   */
+  broadcastCliActionRequired(active: boolean, reason: string = 'authentication', title: string = 'CLI Action Required', message: string = 'Please complete the action in the CLI terminal.'): void {
+    // Store the current state for new clients
+    if (active) {
+      this.currentCliActionState = { active, reason, title, message };
+    } else {
+      this.currentCliActionState = null;
+    }
+    
+    if (!this.isRunning || this.clients.size === 0) {
+      return;
+    }
+
+    const payload = JSON.stringify({
+      type: 'cli_action_required',
+      data: {
+        active,
+        reason,
+        title,
+        message
+      },
+      timestamp: Date.now(),
+    });
+
+    this.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        try {
+          client.send(payload);
+        } catch (error) {
+          // Remove failed client
+          this.clients.delete(client);
+        }
+      } else {
+        // Remove disconnected client
+        this.clients.delete(client);
+      }
+    });
+  }
+
+  /**
    * Handle incoming messages from web clients
    */
   private handleIncomingMessage(message: { type: string; content?: string; callId?: string; outcome?: string; payload?: any }): void {
@@ -669,6 +711,15 @@ export class WebInterfaceService {
         data: this.currentConsoleMessages,
         timestamp: Date.now(),
       }));
+
+      // Send current CLI action state to new client if active
+      if (this.currentCliActionState && this.currentCliActionState.active) {
+        ws.send(JSON.stringify({
+          type: 'cli_action_required',
+          data: this.currentCliActionState,
+          timestamp: Date.now(),
+        }));
+      }
     });
 
     this.wss.on('error', (error) => {

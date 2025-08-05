@@ -380,6 +380,9 @@ class AuditariaWebClient {
             case 'console_messages':
                 this.handleConsoleMessages(message.data);
                 break;
+            case 'cli_action_required':
+                this.handleCliActionRequired(message.data);
+                break;
             case 'history_sync':
                 this.loadHistoryItems(message.data.history);
                 break;
@@ -2556,6 +2559,38 @@ class AuditariaWebClient {
         
         // Enable the button once console messages are received (even if empty)
         this.debugLogsButton.disabled = false;
+    }
+    
+    handleCliActionRequired(data) {
+        const modal = document.getElementById('cli-action-modal');
+        const titleEl = document.getElementById('cli-action-title');
+        const messageEl = document.getElementById('cli-action-message');
+        
+        if (data.active) {
+            // Update content
+            if (titleEl) titleEl.textContent = data.title || 'CLI Action Required';
+            if (messageEl) messageEl.textContent = data.message || 'Please complete the action in the CLI terminal.';
+            
+            // Show modal with flex display for centering
+            modal.style.display = 'flex';
+            
+            // Disable web interface interaction
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            if (messageInput) messageInput.disabled = true;
+            if (sendButton) sendButton.disabled = true;
+        } else {
+            // Hide modal
+            modal.style.display = 'none';
+            
+            // Re-enable web interface interaction (if connected)
+            if (this.isConnected) {
+                const messageInput = document.getElementById('message-input');
+                const sendButton = document.getElementById('send-button');
+                if (messageInput) messageInput.disabled = false;
+                if (sendButton) sendButton.disabled = false;
+            }
+        }
     }
     
     filterDebugLogs(searchTerm) {
