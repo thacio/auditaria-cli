@@ -666,24 +666,51 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
     }
   }, [consoleMessages, webInterface?.isRunning, config]); // Depend on console messages and debug mode
 
-  // Broadcast CLI action required state when auth screens are shown
+  // Broadcast CLI action required state when interactive screens are shown
   useEffect(() => {
     if (webInterface?.service && webInterface.isRunning) {
-      const isActionRequired = isAuthDialogOpen || isAuthenticating;
+      let reason = '';
+      let message = '';
+      
+      // Check for any active dialog/screen
+      if (isAuthDialogOpen || isAuthenticating) {
+        reason = 'authentication';
+        message = isAuthenticating 
+          ? t('web.cli_action.auth_in_progress', 'Authentication is in progress. Please check the CLI terminal.')
+          : t('web.cli_action.auth_required', 'Authentication is required. Please complete the authentication process in the CLI terminal.');
+      } else if (isThemeDialogOpen) {
+        reason = 'theme_selection';
+        message = t('web.cli_action.theme_selection', 'Theme selection is open. Please choose a theme in the CLI terminal.');
+      } else if (isEditorDialogOpen) {
+        reason = 'editor_settings';
+        message = t('web.cli_action.editor_settings', 'Editor settings are open. Please configure your editor in the CLI terminal.');
+      } else if (isLanguageDialogOpen) {
+        reason = 'language_selection';
+        message = t('web.cli_action.language_selection', 'Language selection is open. Please choose a language in the CLI terminal.');
+      } else if (showPrivacyNotice) {
+        reason = 'privacy_notice';
+        message = t('web.cli_action.privacy_notice', 'Privacy notice is displayed. Please review it in the CLI terminal.');
+      }
+      
+      const isActionRequired = !!reason;
       
       if (isActionRequired) {
         const title = t('web.cli_action.title', 'CLI Action Required');
-        const message = isAuthenticating 
-          ? t('web.cli_action.auth_in_progress', 'Authentication is in progress. Please check the CLI terminal.')
-          : t('web.cli_action.auth_required', 'Authentication is required. Please complete the authentication process in the CLI terminal.');
-        
-        webInterface.service.broadcastCliActionRequired(true, 'authentication', title, message);
+        webInterface.service.broadcastCliActionRequired(true, reason, title, message);
       } else {
-        // Clear the action required state when auth is complete
+        // Clear the action required state when all dialogs are closed
         webInterface.service.broadcastCliActionRequired(false);
       }
     }
-  }, [isAuthDialogOpen, isAuthenticating, webInterface?.isRunning]); // Monitor auth states
+  }, [
+    isAuthDialogOpen, 
+    isAuthenticating, 
+    isThemeDialogOpen,
+    isEditorDialogOpen,
+    isLanguageDialogOpen,
+    showPrivacyNotice,
+    webInterface?.isRunning
+  ]); // Monitor all interactive screen states
 
   // Web interface startup message for --web flag
   const webStartupShownRef = useRef(false);
