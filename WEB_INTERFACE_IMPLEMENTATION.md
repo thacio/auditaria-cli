@@ -648,6 +648,13 @@ useEffect(() => {
 | Performance Optimization | ✅ Complete | Infinite loop prevention, debug cleanup |
 | Markdown Processing System | ✅ Complete | AI message markdown rendering with HTML cleaning |
 | Header Modal System | ✅ Complete | Commands, MCPs, and Debug modals with search functionality |
+| Copy Functionality | ✅ Complete | Markdown and plain text copy buttons for all messages |
+| Print to PDF | ✅ Complete | Browser print dialog for conversation export |
+| Auto-scroll Toggle | ✅ Complete | Enable/disable automatic scrolling |
+| Message Merging | ✅ Complete | AI messages merge within 10-second window |
+| TODO Rendering | ✅ Complete | Special rendering for TodoWrite tool results |
+| About Info Display | ✅ Complete | Version and system info rendering |
+| Code Architecture | ✅ Complete | Modular refactoring into 11 focused modules |
 | Documentation | ✅ Complete | This document |
 | Testing | ✅ Complete | Manual testing completed |
 | Git Branch | ✅ Complete | feature/web-interface pushed |
@@ -680,8 +687,46 @@ useEffect(() => {
 - ✅ **Slash Commands Modal**: View and search all available CLI commands in web interface
 - ✅ **MCP Servers Modal**: Browse MCP servers and their tools with status indicators
 - ✅ **Debug Console Modal**: View console messages (errors, warnings, logs) from CLI with search functionality
+- ✅ **Copy to Clipboard**: Dual copy buttons for markdown and plain text formats with visual feedback
+- ✅ **Print Conversation**: Export full chat history to PDF via browser print dialog
+- ✅ **Auto-scroll Control**: Toggle automatic scrolling on/off with visual indicator
+- ✅ **Message Merging**: Sequential AI messages within 10 seconds merge automatically
+- ✅ **TODO List Rendering**: TodoWrite tool results display as formatted task lists
+- ✅ **Modular Architecture**: Clean separation into 11 focused modules for maintainability
 
-## 🆕 Latest Enhancements: Enhanced Web Interface Commands & Launch Options
+## 🆕 Latest Enhancements
+
+### **🏗️ Modular Code Refactoring** (Latest)
+Complete architectural refactoring of the web client codebase:
+
+**New Module Structure:**
+```
+web-client/src/
+├── managers/          # Business logic
+│   ├── WebSocketManager.js
+│   ├── MessageManager.js
+│   ├── ModalManager.js
+│   └── KeyboardManager.js
+├── components/        # UI components
+│   ├── MessageComponent.js
+│   ├── LoadingIndicator.js
+│   └── ToolRenderer.js
+├── utils/            # Utilities
+│   ├── markdown.js
+│   ├── formatters.js
+│   └── clipboard.js
+└── client.js         # Main orchestrator (425 lines, down from 2662)
+```
+
+**Refactoring Benefits:**
+- **Code Reduction**: From 1 file (2662 lines) to 11 focused modules
+- **DRY Compliance**: Eliminated all duplicate patterns
+- **KISS Principle**: Simple interfaces with single responsibilities
+- **Zero Breaking Changes**: 100% feature compatibility maintained
+- **Improved Maintainability**: Each module under 500 lines
+- **Clear Separation**: Business logic, UI, and utilities separated
+
+### **Enhanced Web Interface Commands & Launch Options**
 
 **New Files:**
 - `packages/cli/src/utils/browserUtils.ts` - Cross-platform browser opening utilities
