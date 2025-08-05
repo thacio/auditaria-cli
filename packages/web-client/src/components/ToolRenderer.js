@@ -26,6 +26,11 @@ function renderToolItem(tool) {
     const toolItemEl = document.createElement('div');
     toolItemEl.className = 'tool-item';
     
+    // Add data attribute with callId for tracking
+    if (tool.callId) {
+        toolItemEl.setAttribute('data-call-id', tool.callId);
+    }
+    
     // Tool header with status indicator, name, and status text
     const toolHeaderEl = createToolHeader(tool);
     toolItemEl.appendChild(toolHeaderEl);

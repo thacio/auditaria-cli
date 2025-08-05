@@ -124,14 +124,16 @@ export function updateMessageTimestamp(messageEl) {
 /**
  * Add special content to a message bubble
  */
-export function addSpecialContentToMessage(messageEl, historyItem) {
+export function addSpecialContentToMessage(messageEl, historyItem, preserveExisting = false) {
     const bubbleEl = messageEl.querySelector('.message-bubble');
     if (!bubbleEl) return;
     
-    // Remove existing special content
-    const existingSpecial = bubbleEl.querySelector('.tool-list, .about-info');
-    if (existingSpecial) {
-        existingSpecial.remove();
+    // Remove existing special content unless preserving
+    if (!preserveExisting) {
+        const existingSpecial = bubbleEl.querySelector('.tool-list, .about-info');
+        if (existingSpecial) {
+            existingSpecial.remove();
+        }
     }
     
     // Add new special content
