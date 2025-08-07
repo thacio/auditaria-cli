@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// WEB_INTERFACE_FEATURE: This entire file is part of the web interface implementation
+
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
 export interface FooterData {

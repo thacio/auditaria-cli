@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// WEB_INTERFACE_FEATURE: This entire file is part of the web interface implementation
+
 import { type SlashCommand, CommandKind, type CommandContext } from './types.js';
 import { t } from '@thacio/auditaria-cli-core';
 import { openBrowserWithDelay } from '../../utils/browserUtils.js';

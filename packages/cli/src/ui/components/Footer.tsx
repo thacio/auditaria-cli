@@ -13,7 +13,9 @@ import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import Gradient from 'ink-gradient';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
+// WEB_INTERFACE_START: Footer context import for web interface integration
 import { useFooter } from '../contexts/FooterContext.js';
+// WEB_INTERFACE_END
 
 interface FooterProps {
   model: string;
@@ -44,6 +46,7 @@ export const Footer: React.FC<FooterProps> = ({
 }) => {
   const limit = tokenLimit(model);
   const percentage = promptTokenCount / limit;
+  // WEB_INTERFACE_START: Footer context for broadcasting data to web interface
   const footerContext = useFooter();
 
   // Update footer data for web interface (removed footerContext from dependencies)
@@ -88,6 +91,7 @@ export const Footer: React.FC<FooterProps> = ({
     showErrorDetails
     // Removed footerContext from dependencies to prevent infinite loop
   ]);
+  // WEB_INTERFACE_END
 
   return (
     <Box marginTop={1} justifyContent="space-between" width="100%">

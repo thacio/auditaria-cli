@@ -29,8 +29,9 @@ import {
   ToolCallStatus,
   HistoryItemWithoutId,
 } from '../types.js';
+// WEB_INTERFACE_START
 import { useToolConfirmation } from '../contexts/ToolConfirmationContext.js';
-
+// WEB_INTERFACE_START
 export type ScheduleFn = (
   request: ToolCallRequestInfo | ToolCallRequestInfo[],
   signal: AbortSignal,
@@ -75,9 +76,9 @@ export function useReactToolScheduler(
   const [toolCallsForDisplay, setToolCallsForDisplay] = useState<
     TrackedToolCall[]
   >([]);
-  
+  // WEB_INTERFACE_START
   const toolConfirmationContext = useToolConfirmation();
-
+  // WEB_INTERFACE_END
   const outputUpdateHandler: OutputUpdateHandler = useCallback(
     (toolCallId, outputChunk) => {
       setPendingHistoryItem((prevItem) => {
@@ -86,7 +87,7 @@ export function useReactToolScheduler(
             ...prevItem,
             tools: prevItem.tools.map((toolDisplay) =>
               toolDisplay.callId === toolCallId &&
-              toolDisplay.status === ToolCallStatus.Executing
+                toolDisplay.status === ToolCallStatus.Executing
                 ? { ...toolDisplay, resultDisplay: outputChunk }
                 : toolDisplay,
             ),
@@ -133,7 +134,7 @@ export function useReactToolScheduler(
     },
     [setToolCallsForDisplay],
   );
-
+  // WEB_INTERFACE_START
   // Handle tool confirmations for web interface
   const prevAwaitingApprovalIdsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
@@ -158,7 +159,7 @@ export function useReactToolScheduler(
           confirmationDetails: waitingCall.confirmationDetails,
           timestamp: Date.now(),
         };
-        
+
         toolConfirmationContext.addPendingConfirmation(pendingConfirmation);
       }
     });
@@ -173,7 +174,7 @@ export function useReactToolScheduler(
     // Update the ref for next time
     prevAwaitingApprovalIdsRef.current = currentAwaitingApprovalIds;
   }, [toolCallsForDisplay]); // Only depend on toolCallsForDisplay
-
+  // WEB_INTERFACE_END
   const scheduler = useMemo(
     () =>
       new CoreToolScheduler({

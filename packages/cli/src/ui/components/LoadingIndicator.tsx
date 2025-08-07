@@ -13,7 +13,9 @@ import { useStreamingContext } from '../contexts/StreamingContext.js';
 import { StreamingState } from '../types.js';
 import { GeminiRespondingSpinner } from './GeminiRespondingSpinner.js';
 import { formatDuration } from '../utils/formatters.js';
+// WEB_INTERFACE_START: Loading state context import for web interface integration
 import { useLoadingState } from '../contexts/LoadingStateContext.js';
+// WEB_INTERFACE_END
 
 interface LoadingIndicatorProps {
   currentLoadingPhrase?: string;
@@ -29,6 +31,7 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   thought,
 }) => {
   const streamingState = useStreamingContext();
+  // WEB_INTERFACE_START: Loading state context for broadcasting to web interface
   const loadingStateContext = useLoadingState();
 
   // Update loading state for web interface (removed loadingStateContext from dependencies)
@@ -46,6 +49,7 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
       loadingStateContext.updateLoadingState(loadingStateData);
     }
   }, [streamingState, currentLoadingPhrase, elapsedTime, thought]); // Removed loadingStateContext to prevent infinite loop
+  // WEB_INTERFACE_END
 
   if (streamingState === StreamingState.Idle) {
     return null;

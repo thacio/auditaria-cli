@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// WEB_INTERFACE_FEATURE: This entire file is part of the web interface implementation
+
 import { spawn } from 'node:child_process';
 import { platform } from 'node:os';
 

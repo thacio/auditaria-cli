@@ -63,10 +63,12 @@ import {
   AuthType,
   type OpenFiles,
   ideContext,
+  // WEB_INTERFACE_START: Additional imports for MCP server broadcasting
   DiscoveredMCPTool,
   getMCPServerStatus,
   getAllMCPServerStatuses,
   MCPServerStatus,
+  // WEB_INTERFACE_END
 } from '@thacio/auditaria-cli-core';
 import { validateAuthMethod } from '../config/auth.js';
 import { useLogger } from './hooks/useLogger.js';
@@ -91,11 +93,13 @@ import ansiEscapes from 'ansi-escapes';
 import { OverflowProvider } from './contexts/OverflowContext.js';
 import { ShowMoreLines } from './components/ShowMoreLines.js';
 import { PrivacyNotice } from './privacy/PrivacyNotice.js';
+// WEB_INTERFACE_START: Web interface context imports
 import { WebInterfaceProvider, useWebInterface } from './contexts/WebInterfaceContext.js';
 import { SubmitQueryProvider, useSubmitQueryRegistration } from './contexts/SubmitQueryContext.js';
 import { FooterProvider, useFooter } from './contexts/FooterContext.js';
 import { LoadingStateProvider, useLoadingState } from './contexts/LoadingStateContext.js';
 import { ToolConfirmationProvider, useToolConfirmation, PendingToolConfirmation } from './contexts/ToolConfirmationContext.js';
+// WEB_INTERFACE_END
 
 const CTRL_EXIT_PROMPT_DURATION_MS = 1000;
 
@@ -104,27 +108,33 @@ interface AppProps {
   settings: LoadedSettings;
   startupWarnings?: string[];
   version: string;
+  // WEB_INTERFACE_START: Web interface props
   webEnabled?: boolean;
   webOpenBrowser?: boolean;
+  // WEB_INTERFACE_END
 }
 
 export const AppWrapper = (props: AppProps) => (
   <SessionStatsProvider>
+    {/* WEB_INTERFACE_START: Web interface provider wrappers */}
     <SubmitQueryProvider>
       <WebInterfaceProvider enabled={props.webEnabled} openBrowser={props.webOpenBrowser}>
         <FooterProvider>
           <LoadingStateProvider>
             <ToolConfirmationProvider>
+              {/* WEB_INTERFACE_END */}
               <App {...props} />
+              {/* WEB_INTERFACE_START: Close web interface providers */}
             </ToolConfirmationProvider>
           </LoadingStateProvider>
         </FooterProvider>
       </WebInterfaceProvider>
     </SubmitQueryProvider>
+    {/* WEB_INTERFACE_END */}
   </SessionStatsProvider>
 );
 
-const App = ({ config, settings, startupWarnings = [], version, webEnabled, webOpenBrowser }: AppProps) => {
+const App = ({ config, settings, startupWarnings = [], version, /* WEB_INTERFACE_START */ webEnabled, webOpenBrowser /* WEB_INTERFACE_END */ }: AppProps) => {
   const isFocused = useFocus();
   useBracketedPaste();
   const [updateMessage, setUpdateMessage] = useState<string | null>(null);
@@ -543,6 +553,7 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
     useLoadingIndicator(streamingState);
   const showAutoAcceptIndicator = useAutoAcceptIndicator({ config });
 
+  // WEB_INTERFACE_START: Web interface integration - submitQuery registration and abort handler
   // Store current submitQuery in ref for web interface
   const submitQueryRef = useRef(submitQuery);
   useEffect(() => {
@@ -573,6 +584,7 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
       webInterface.service.setAbortHandler(triggerAbort);
     }
   }, [webInterface?.service, triggerAbort]);
+  // WEB_INTERFACE_END
 
   // Register with web interface service once
   const submitHandlerRegistered = useRef(false);
@@ -589,6 +601,7 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
     return () => clearTimeout(timeout);
   }, []); // Empty dependency array - only register once
 
+  // WEB_INTERFACE_START: Web interface broadcasting - footer, loading state, commands, MCP servers, console messages, CLI action required, startup message, and tool confirmations
   // Broadcast footer data to web interface (moved from FooterContext to avoid circular deps)
   const footerContext = useFooter();
   useEffect(() => {
@@ -766,6 +779,7 @@ const App = ({ config, settings, startupWarnings = [], version, webEnabled, webO
       prevConfirmationsRef.current = currentConfirmations;
     }
   }, [toolConfirmationContext?.pendingConfirmations]); // Only depend on pendingConfirmations
+  // WEB_INTERFACE_END
 
   const handleFinalSubmit = useCallback(
     (submittedValue: string) => {

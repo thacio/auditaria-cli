@@ -6,7 +6,9 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { HistoryItem } from '../types.js';
+// WEB_INTERFACE_START: Web interface context import
 import { useWebInterface } from '../contexts/WebInterfaceContext.js';
+// WEB_INTERFACE_END
 
 // Type for the updater function passed to updateHistoryItem
 type HistoryItemUpdater = (
@@ -33,6 +35,7 @@ export interface UseHistoryManagerReturn {
 export function useHistory(): UseHistoryManagerReturn {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const messageIdCounterRef = useRef(0);
+  // WEB_INTERFACE_START: Web interface integration
   const webInterface = useWebInterface();
 
   // Update web interface history whenever the main history changes
@@ -41,6 +44,7 @@ export function useHistory(): UseHistoryManagerReturn {
       webInterface.setCurrentHistory(history);
     }
   }, [history, webInterface]);
+  // WEB_INTERFACE_END
 
   // Generates a unique message ID based on a timestamp and a counter.
   const getNextMessageId = useCallback((baseTimestamp: number): number => {
@@ -73,12 +77,14 @@ export function useHistory(): UseHistoryManagerReturn {
         return [...prevHistory, newItem];
       });
 
+      // WEB_INTERFACE_START: Broadcast new messages to web interface
       // Broadcast to web interface if available
       webInterface?.broadcastMessage(newItem);
+      // WEB_INTERFACE_END
 
       return id; // Return the generated ID (even if not added, to keep signature)
     },
-    [getNextMessageId, webInterface],
+    [getNextMessageId, /* WEB_INTERFACE_START */ webInterface /* WEB_INTERFACE_END */],
   );
 
   /**
@@ -113,11 +119,13 @@ export function useHistory(): UseHistoryManagerReturn {
     setHistory([]);
     messageIdCounterRef.current = 0;
     
+    // WEB_INTERFACE_START: Broadcast clear command to web interface
     // Broadcast clear to web interface if available
     if (webInterface?.service) {
       webInterface.service.broadcastClear();
     }
-  }, [webInterface]);
+    // WEB_INTERFACE_END
+  }, [/* WEB_INTERFACE_START */ webInterface /* WEB_INTERFACE_END */]);
 
   return {
     history,

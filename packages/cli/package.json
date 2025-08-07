@@ -52,8 +52,10 @@
     "strip-ansi": "^7.1.0",
     "strip-json-comments": "^3.1.1",
     "update-notifier": "^7.3.1",
+    "// WEB_INTERFACE_START: Web server dependencies": "",
     "ws": "^8.18.0",
     "express": "^4.21.2",
+    "// WEB_INTERFACE_END": "",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
@@ -67,8 +69,10 @@
     "@types/react-dom": "^19.1.6",
     "@types/semver": "^7.7.0",
     "@types/shell-quote": "^1.7.5",
+    "// WEB_INTERFACE_START: Web server type definitions": "",
     "@types/ws": "^8.5.13",
     "@types/express": "^5.0.0",
+    "// WEB_INTERFACE_END": "",
     "@types/yargs": "^17.0.32",
     "ink-testing-library": "^4.0.0",
     "jsdom": "^26.1.0",

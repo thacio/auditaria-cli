@@ -32,7 +32,9 @@ import { languageCommand } from '../ui/commands/languageCommand.js';
 import { fallbackImprovedCommand } from '../ui/commands/fallbackImprovedCommand.js';
 import { modelSwitchCommand } from '../ui/commands/modelSwitchCommand.js';
 import { stayProCommand } from '../ui/commands/stayProCommand.js';
+// WEB_INTERFACE_START: Web command import
 import { webCommand } from '../ui/commands/webCommand.js';
+// WEB_INTERFACE_END
 
 /**
  * Loads the core, hard-coded slash commands that are an integral part
@@ -75,7 +77,9 @@ export class BuiltinCommandLoader implements ICommandLoader {
       fallbackImprovedCommand,
       modelSwitchCommand,
       stayProCommand,
+      // WEB_INTERFACE_START: Add web command to builtin commands
       webCommand,
+      // WEB_INTERFACE_END
     ];
 
     return allDefinitions.filter((cmd): cmd is SlashCommand => cmd !== null);

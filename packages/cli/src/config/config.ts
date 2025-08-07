@@ -62,7 +62,9 @@ export interface CliArgs {
   extensions: string[] | undefined;
   listExtensions: boolean | undefined;
   ideMode: boolean | undefined;
+  // WEB_INTERFACE_START: Web interface flag
   web: boolean | string | undefined;
+  // WEB_INTERFACE_END
   proxy: string | undefined;
 }
 
@@ -197,6 +199,7 @@ export async function parseArguments(): Promise<CliArgs> {
       type: 'boolean',
       description: 'Run in IDE mode?',
     })
+    // WEB_INTERFACE_START: Web interface command-line option
     .option('web', {
       alias: 'w',
       type: 'string',
@@ -207,6 +210,7 @@ export async function parseArguments(): Promise<CliArgs> {
         return value;
       },
     })
+    // WEB_INTERFACE_END
     .option('proxy', {
       type: 'string',
       description:
